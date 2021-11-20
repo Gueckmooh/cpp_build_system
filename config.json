@@ -1,0 +1,11 @@
+{
+    "source_dir":"src",
+    "config_dir":"config",
+    "build_dir":"build",
+    "modules_dir":"$(config_dir)/modules",
+    "3p_modules_dir":"$(modules_dir)/3p",
+    "makefiles_dir":"$(config_dir)/makefiles2",
+    "makerules_dir":"$(config_dir)/makerules",
+    "scripts_dir":"scripts",
+    "include_dir":"$(build_dir)/include"
+}

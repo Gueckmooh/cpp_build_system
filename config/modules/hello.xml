@@ -1,0 +1,7 @@
+<module name="hello">
+  <type>shared_library</type>
+  <baseDir>hello</baseDir>
+  <exportDir>hello</exportDir>
+  <dependancies>
+  </dependancies>
+</module>
