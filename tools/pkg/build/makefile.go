@@ -194,7 +194,7 @@ func GenerateConfigMakefile(conf *config.Config, confToDump *config.Config) erro
 	configFileName := path.Join(conf.SandboxRoot, conf.MakerulesDir, configMakefileName)
 
 	if utils.FileExists(configFileName) && !options.GetOptionBool("override-config-file") {
-		return fmt.Errorf("file %s already exists, use --allow-override to override", configFileName)
+		return fmt.Errorf("file %s already exists, use --allow-overwrite to override", configFileName)
 	}
 
 	if !utils.DirExists(path.Dir(configFileName)) {
