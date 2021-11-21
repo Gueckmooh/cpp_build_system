@@ -3,5 +3,6 @@
   <baseDir>hello</baseDir>
   <exportDir>hello</exportDir>
   <dependencies>
+    <dependency>print</dependency>
   </dependencies>
 </module>

@@ -1,7 +1,8 @@
 #include <hello/hello.hpp>
+#include <print/print.hpp>
 
 #include <iostream>
 
 void hello() {
-    std::cout << "Hello" << std::endl;
+    print("Hello");
 }

@@ -1,0 +1,7 @@
+<module name="print">
+  <type>shared_library</type>
+  <baseDir>print</baseDir>
+  <exportDir>print</exportDir>
+  <dependencies>
+  </dependencies>
+</module>

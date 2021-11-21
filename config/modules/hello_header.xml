@@ -1,0 +1,7 @@
+<module name="hello_header">
+  <type>headers_only</type>
+  <baseDir>hello_header</baseDir>
+  <exportDir>hello_header</exportDir>
+  <dependencies>
+  </dependencies>
+</module>

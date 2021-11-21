@@ -81,7 +81,9 @@ ifeq ($(INCLUDE_DEPENDENCY),0)
 			m := modBundle.GetModuleByName(dep)
 			if m != nil {
 				modDepsL = append(modDepsL, m.Name)
-				modLibDepsL = append(modLibDepsL, getLibName(m.Name))
+				if m.Type != "headers_only" {
+					modLibDepsL = append(modLibDepsL, getLibName(m.Name))
+				}
 			}
 		}
 		modDeps = strings.Join(modDepsL, " ")

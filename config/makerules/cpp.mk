@@ -31,8 +31,12 @@ CXXLD_MSG=$(ECHO) "\tCXXLD\t$(shell realpath --relative-to="$(PWD)" $@)"
 GEN_MSG=$(ECHO) "\tGEN\t$(shell realpath --relative-to="$(PWD)" $@)"
 
 ### COMPUTE FILES
+ifneq ($(MODULE_TARGET_KIND),headers_only)
 SOURCE_FILES?=$(shell find $(MODULE_SOURCE_PATH) -name "*.cpp" -print)
 SOURCE_FILES:=$(subst $(MODULE_SOURCE_PATH)/,,$(SOURCE_FILES))
+else
+SOURCE_FILES?=
+endif
 MODULE_DEPS_PATH:=$(DEPS_DIR)/$(MODULE_BASE_DIR)
 MODULE_OBJS_PATH:=$(OBJS_DIR)/$(MODULE_BASE_DIR)
 DEP_FILES:=$(addprefix $(MODULE_DEPS_PATH)/, $(SOURCE_FILES:.cpp=.d))

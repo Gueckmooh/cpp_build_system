@@ -4,5 +4,6 @@
   <exportDir>pouet</exportDir>
   <dependencies>
     <dependency>hello</dependency>
+    <dependency>hello_header</dependency>
   </dependencies>
 </module>
