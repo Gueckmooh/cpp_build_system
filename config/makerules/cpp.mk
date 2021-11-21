@@ -43,7 +43,7 @@ DEP_FILES:=$(addprefix $(MODULE_DEPS_PATH)/, $(SOURCE_FILES:.cpp=.d))
 OBJ_FILES:=$(addprefix $(MODULE_OBJS_PATH)/, $(SOURCE_FILES:.cpp=.o))
 
 ifneq ($(MODULE_TARGET_KIND),executable)
-HEADER_FILES:=$(shell find $(MODULE_HEADERS_PATH) -type f -print)
+HEADER_FILES?=$(shell find $(MODULE_HEADERS_PATH) -type f -print)
 HEADER_FILES:=$(subst $(MODULE_HEADERS_PATH)/,,$(HEADER_FILES))
 EXPORTED_HEADER_FILES:=$(addprefix $(HEADERS_EXPORT_PATH)/, $(HEADER_FILES))
 endif

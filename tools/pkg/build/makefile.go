@@ -43,7 +43,7 @@ func getBaseDir(module *modules.Module) string {
 }
 
 func getHeadersExportDir(module *modules.Module) string {
-	return fmt.Sprintf("MODULE_HEADERS_EXPORT_DIR=%s\n", module.BaseDir)
+	return fmt.Sprintf("MODULE_HEADERS_EXPORT_DIR=%s\n", module.ExportDir)
 }
 
 func GetModuleMakefileContent(conf *config.Config, module *modules.Module,

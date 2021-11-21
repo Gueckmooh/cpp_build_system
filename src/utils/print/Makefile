@@ -1,4 +1,4 @@
-MODULE_NAME=print
+MODULE_NAME=utils/print
 
 include config.mk
 

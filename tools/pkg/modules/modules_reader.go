@@ -29,6 +29,7 @@ func ReadModule(filename string) (*Module, error) {
 	if err != nil {
 		return nil, fmt.Errorf("module.ReadModule: reading file %s: %s\n", filename, err.Error())
 	}
+
 	return conf, nil
 }
 

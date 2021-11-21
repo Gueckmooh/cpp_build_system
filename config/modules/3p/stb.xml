@@ -1,0 +1,10 @@
+<module name="3p/stb" third_party="true">
+  <type>headers_only</type>
+  <baseDir>3p/stb</baseDir>
+  <exportDir>3p/stb</exportDir>
+  <sources>
+    <git target="stb">https://github.com/nothings/stb</git>
+  </sources>
+  <dependencies>
+  </dependencies>
+</module>
