@@ -43,12 +43,12 @@ func tryMain() error {
 		return fmt.Errorf("tryMain: %s", err.Error())
 	}
 
-	err = build.GenrateModuleMakefileBundle(newConfig, modBundle)
+	err = build.GenrateModuleMakefileBundle(newConfig, modBundle, false)
 	if err != nil {
 		return fmt.Errorf("tryMain: %s", err.Error())
 	}
 
-	err = build.GenerateModuleBundleConfigMakefile(newConfig, modBundle)
+	err = build.GenerateModuleBundleConfigMakefile(newConfig, modBundle, false)
 	if err != nil {
 		return fmt.Errorf("tryMain: %s", err.Error())
 	}

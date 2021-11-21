@@ -119,8 +119,11 @@ func GenerateModuleMakefile(conf *config.Config, module *modules.Module,
 	return nil
 }
 
-func GenrateModuleMakefileBundle(conf *config.Config, modBundle *modules.ModuleBundle) error {
+func GenrateModuleMakefileBundle(conf *config.Config, modBundle *modules.ModuleBundle, thirdParty bool) error {
 	for _, module := range modBundle.Modules {
+		if module.ThirdParty != thirdParty {
+			continue
+		}
 		filename := GetMakefileName(conf, module)
 		err := GenerateModuleMakefile(conf, module, modBundle, filename)
 		if err != nil {
@@ -163,8 +166,12 @@ func GenerateModuleConfigMakefile(conf *config.Config, module *modules.Module) e
 	return nil
 }
 
-func GenerateModuleBundleConfigMakefile(conf *config.Config, modBundle *modules.ModuleBundle) error {
+func GenerateModuleBundleConfigMakefile(conf *config.Config, modBundle *modules.ModuleBundle,
+	thirdParty bool) error {
 	for _, module := range modBundle.Modules {
+		if module.ThirdParty != thirdParty {
+			continue
+		}
 		err := GenerateModuleConfigMakefile(conf, module)
 		if err != nil {
 			return fmt.Errorf("build.GenerateModuleBundleConfigMakefile: %s", err.Error())

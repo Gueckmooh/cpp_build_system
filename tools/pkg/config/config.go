@@ -19,12 +19,12 @@ import (
 // }
 
 type Config struct {
-	SandboxRoot  string
-	SrcDir       string `json:"source_dir" type:"path" dump_to_mk:"true"`
-	ConfigDir    string `json:"config_dir" type:"path" dump_to_mk:"true"`
-	BuildDir     string `json:"build_dir" type:"path" dump_to_mk:"true"`
-	ModulesDir   string `json:"modules_dir" type:"path"`
-	TPModulesDir string `json:"3p_modules_dir" type:"path"`
+	SandboxRoot string
+	SrcDir      string `json:"source_dir" type:"path" dump_to_mk:"true"`
+	ConfigDir   string `json:"config_dir" type:"path" dump_to_mk:"true"`
+	BuildDir    string `json:"build_dir" type:"path" dump_to_mk:"true"`
+	ModulesDir  string `json:"modules_dir" type:"path"`
+	// TPModulesDir string `json:"3p_modules_dir" type:"path"`
 	MakefilesDir string `json:"makefiles_dir" type:"path" dump_to_mk:"true"`
 	MakerulesDir string `json:"makerules_dir" type:"path" dump_to_mk:"true"`
 	ScriptsDir   string `json:"scripts_dir" type:"path" dump_to_mk:"true"`

@@ -34,7 +34,7 @@ func tryMain() error {
 	c := utils.MakeContext()
 	newConfig := conf.Expand(c)
 
-	modFiles, err := modules.Get3PModuleFiles(newConfig)
+	modFiles, err := modules.GetModuleFiles(newConfig)
 	if err != nil {
 		return fmt.Errorf("tryMain: %s", err.Error())
 	}
@@ -44,15 +44,17 @@ func tryMain() error {
 		return fmt.Errorf("tryMain: %s", err.Error())
 	}
 	for _, m := range modBundle.Modules {
-		m.Sources.Git.Target = path.Join(conf.SrcDir, m.BaseDir, m.Sources.Git.Target)
+		if m.Sources.Git != nil {
+			m.Sources.Git.Target = path.Join(conf.SrcDir, m.BaseDir, m.Sources.Git.Target)
+		}
 	}
 
-	err = build.GenrateModuleMakefileBundle(newConfig, modBundle)
+	err = build.GenrateModuleMakefileBundle(newConfig, modBundle, true)
 	if err != nil {
 		return fmt.Errorf("tryMain: %s", err.Error())
 	}
 
-	err = build.GenerateModuleBundleConfigMakefile(newConfig, modBundle)
+	err = build.GenerateModuleBundleConfigMakefile(newConfig, modBundle, true)
 	if err != nil {
 		return fmt.Errorf("tryMain: %s", err.Error())
 	}
