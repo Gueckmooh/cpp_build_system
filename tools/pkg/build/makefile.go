@@ -33,6 +33,8 @@ func getTarget(module *modules.Module) string {
 	switch module.Type {
 	case "shared_library":
 		target += fmt.Sprintf("MODULE_TARGET=lib%s\n", getLibName(module.Name))
+	case "executable":
+		target += fmt.Sprintf("MODULE_TARGET=%s\n", getLibName(module.Name))
 	}
 	target += fmt.Sprintf("MODULE_TARGET_KIND=%s\n", module.Type)
 	return target
@@ -46,8 +48,41 @@ func getHeadersExportDir(module *modules.Module) string {
 	return fmt.Sprintf("MODULE_HEADERS_EXPORT_DIR=%s\n", module.ExportDir)
 }
 
+func getDependencies(module *modules.Module, modBundle *modules.ModuleBundle) (string, error) {
+	var content string
+
+	var modDeps string
+	var modLibDeps string
+	{
+		var modDepsL []string
+		var modLibDepsL []string
+		for _, dep := range module.Dependencies.Dependency {
+			m := modBundle.GetModuleByName(dep)
+			if m != nil {
+				modDepsL = append(modDepsL, m.Name)
+			}
+		}
+
+		allDeps, err := modules.ComputeDependencies(module, modBundle)
+		if err != nil {
+			return "", fmt.Errorf("getDependencies: %s", err.Error())
+		}
+		for _, dep := range allDeps {
+			if dep.Type != "headers_only" && dep.Name != module.Name {
+				modLibDepsL = append(modLibDepsL, getLibName(dep.Name))
+			}
+		}
+		modDeps = strings.Join(modDepsL, " ")
+		modLibDeps = strings.Join(modLibDepsL, " ")
+	}
+
+	content += fmt.Sprintf("MODULE_DEPENDENCIES=%s\n", modDeps)
+	content += fmt.Sprintf("MODULE_LIB_DEPENDENCIES=%s\n", modLibDeps)
+	return content, nil
+}
+
 func GetModuleMakefileContent(conf *config.Config, module *modules.Module,
-	modBundle *modules.ModuleBundle) string {
+	modBundle *modules.ModuleBundle) (string, error) {
 	/*
 	  MODULE_TARGET=libhello
 	  MODULE_TARGET_KIND=shared_library
@@ -72,41 +107,29 @@ ifeq ($(INCLUDE_DEPENDENCY),0)
 	content += getBaseDir(module)
 	content += getHeadersExportDir(module)
 
-	var modDeps string
-	var modLibDeps string
-	{
-		var modDepsL []string
-		var modLibDepsL []string
-		for _, dep := range module.Dependencies.Dependency {
-			m := modBundle.GetModuleByName(dep)
-			if m != nil {
-				modDepsL = append(modDepsL, m.Name)
-				if m.Type != "headers_only" {
-					modLibDepsL = append(modLibDepsL, getLibName(m.Name))
-				}
-			}
-		}
-		modDeps = strings.Join(modDepsL, " ")
-		modLibDeps = strings.Join(modLibDepsL, " ")
+	depS, err := getDependencies(module, modBundle)
+	if err != nil {
+		return "", err
 	}
-
-	content += fmt.Sprintf("MODULE_DEPENDENCIES=%s\n", modDeps)
-	content += fmt.Sprintf("MODULE_LIB_DEPENDENCIES=%s\n", modLibDeps)
+	content += depS
 
 	content += "else\n"
 	content += fmt.Sprintf(".PHONY: %s_upstream\n", module.Name)
-	content += fmt.Sprintf("%s_upstream:\n\t$(MAKE) -C $(SOURCE_DIR)/%s all BUILD_UPSTREAM=1\n",
+	content += fmt.Sprintf("%s_upstream:\n\t$(QAT)$(MAKE) -C $(SOURCE_DIR)/%s --no-print-directory all BUILD_UPSTREAM=1\n",
 		module.Name, module.BaseDir)
 	content += "endif"
 
-	return content
+	return content, nil
 }
 
 func GenerateModuleMakefile(conf *config.Config, module *modules.Module,
 	modBundle *modules.ModuleBundle, filename string) error {
-	content := GetModuleMakefileContent(conf, module, modBundle)
+	content, err := GetModuleMakefileContent(conf, module, modBundle)
+	if err != nil {
+		return fmt.Errorf("build.GenerateModuleMakefile: %s", err.Error())
+	}
 
-	err := utils.Mkdir(path.Dir(filename))
+	err = utils.Mkdir(path.Dir(filename))
 	if err != nil {
 		return fmt.Errorf("build.GenerateModuleMakefile: %s", err.Error())
 	}

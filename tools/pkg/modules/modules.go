@@ -78,3 +78,38 @@ func GetModuleFiles(conf *config.Config) (*ModuleFileBundle, error) {
 func CloneModuleRepository(m *Module) error {
 	return m.Sources.Git.Clone()
 }
+
+func computeDeps(m *Module, mb *ModuleBundle, visited []string, deps map[*Module]bool) error {
+	for _, v := range visited {
+		if v == m.Name {
+			return fmt.Errorf("%s already visited, circular dependencies detected", v)
+		}
+	}
+
+	deps[m] = true
+
+	for _, dn := range m.Dependencies.Dependency {
+		d := mb.GetModuleByName(dn)
+		if d != nil {
+			if err := computeDeps(d, mb, append(visited, m.Name), deps); err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
+}
+
+func ComputeDependencies(m *Module, mb *ModuleBundle) ([]*Module, error) {
+	deps := make(map[*Module]bool)
+	err := computeDeps(m, mb, []string{}, deps)
+	if err != nil {
+		return nil, fmt.Errorf("compute dependencies: %s", err.Error())
+	}
+	var depL []*Module
+	for k, _ := range deps {
+		depL = append(depL, k)
+	}
+
+	return depL, nil
+}

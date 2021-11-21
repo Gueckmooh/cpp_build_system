@@ -26,9 +26,9 @@ endif
 
 LDFLAGS+=$(addprefix -L,$(LIB_DIR)) $(addprefix -l,$(MODULE_LIB_DEPENDENCIES))
 
-CXX_MSG=$(ECHO) "\tCXX\t$(shell realpath --relative-to="$(PWD)" $<)"
-CXXLD_MSG=$(ECHO) "\tCXXLD\t$(shell realpath --relative-to="$(PWD)" $@)"
-GEN_MSG=$(ECHO) "\tGEN\t$(shell realpath --relative-to="$(PWD)" $@)"
+CXX_MSG=$(ECHO) "\tCXX\t$(shell realpath --relative-to="$(ROOT)" $@)"
+CXXLD_MSG=$(ECHO) "\tCXXLD\t$(shell realpath --relative-to="$(ROOT)" $@)"
+GEN_MSG=$(ECHO) "\tGEN\t$(shell realpath --relative-to="$(ROOT)" $@)"
 
 ### COMPUTE FILES
 ifneq ($(MODULE_TARGET_KIND),headers_only)
@@ -76,9 +76,12 @@ $(MODULE_OBJS_PATH)/%.o: $(MODULE_SOURCE_PATH)/%.cpp $$(@D)/.f
 	$(QAT)$(CXX) $(CXXFLAGS) $< -c -o $@
 
 ### TARGET FILE
-$(BIN_DIR)/%: $(OBJ_FILES) $$(@D)/.f
+ifeq ($(MODULE_TARGET_KIND),executable)
+EXEC_NAME:=$(MODULE_TARGET)
+$(BIN_DIR)/$(EXEC_NAME): $(OBJ_FILES) $$(@D)/.f
 	$(CXXLD_MSG)
 	$(QAT)$(CXX) -o $@ $(OBJ_FILES) $(LDFLAGS)
+endif
 
 $(LIB_DIR)/%.so: $(OBJ_FILES) $$(@D)/.f
 	$(CXXLD_MSG)
