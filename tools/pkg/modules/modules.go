@@ -21,9 +21,9 @@ type Module struct {
 	P3           bool   `xml:"p3,attr"`
 	Type         string `xml:"type"`
 	BaseDir      string `xml:"baseDir"`
-	Dependancies struct {
-		Dependancy []string `xml:"dependancy"`
-	} `xml:"dependancies"`
+	Dependencies struct {
+		Dependency []string `xml:"dependency"`
+	} `xml:"dependencies"`
 	Sources struct {
 		Git     string `xml:"git"`
 		Actions struct {

@@ -7,8 +7,8 @@ SCRIPTS_DIR:=$(ROOT)/scripts
 include $(MAKE_INCLUDE_DIR)/config.mk
 include $(MAKEFILES_DIR)/$(MODULE_NAME).mk
 
-.PHONY: dependancies
-dependancies: $(MODULE_DEPENDANCIES)
+.PHONY: dependencies
+dependencies: $(MODULE_DEPENDENCIES)
 
 MODULE_PATH?=$(SOURCE_DIR)/$(MODULE_BASE_DIR)
 MODULE_SOURCE_PATH?=$(MODULE_PATH)/src
