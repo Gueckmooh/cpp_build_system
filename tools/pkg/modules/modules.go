@@ -42,6 +42,15 @@ type ModuleBundle struct {
 	Modules  []*Module
 }
 
+func (mb *ModuleBundle) GetModuleByName(name string) *Module {
+	for _, m := range mb.Modules {
+		if m.Name == name {
+			return m
+		}
+	}
+	return nil
+}
+
 func GetModuleFiles(conf *config.Config) (*ModuleFileBundle, error) {
 	var filePaths []string
 	err := filepath.Walk(conf.ModulesDir, func(path string, info os.FileInfo, err error) error {

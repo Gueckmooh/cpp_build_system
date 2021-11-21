@@ -24,7 +24,7 @@ ifeq ($(MODULE_TARGET_KIND),shared_library)
 CXXFLAGS+=-fPIC									#@todo change that
 endif
 
-LDFLAGS+=$(addprefix -L,$(LIB_DIR)) $(addprefix -l,$(DEPENDANCIES))
+LDFLAGS+=$(addprefix -L,$(LIB_DIR)) $(addprefix -l,$(MODULE_LIB_DEPENDENCIES))
 
 CXX_MSG=$(ECHO) "\tCXX\t$(shell realpath --relative-to="$(PWD)" $<)"
 CXXLD_MSG=$(ECHO) "\tCXXLD\t$(shell realpath --relative-to="$(PWD)" $@)"
@@ -84,10 +84,16 @@ $(LIB_DIR)/%.so: $(OBJ_FILES) $$(@D)/.f
 .PHONY: prebuild
 prebuild: dep_files export_headers
 
+.PHONY: build_prehook
+build_prehook:
+
 .PHONY: build
+build: build_prehook real_build
+
+.PHONY: real_build
 ifeq ($(MODULE_TARGET_KIND),executable)
-build: $(BIN_DIR)/$(MODULE_TARGET)
+real_build: $(BIN_DIR)/$(MODULE_TARGET)
 endif
 ifeq ($(MODULE_TARGET_KIND),shared_library)
-build: $(LIB_DIR)/$(MODULE_TARGET).so
+real_build: $(LIB_DIR)/$(MODULE_TARGET).so
 endif

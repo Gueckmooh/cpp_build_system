@@ -14,7 +14,7 @@ func processOptions() {
 	for _, option := range os.Args {
 		switch option {
 		case "--allow-overwrite":
-			options.SetOption("override-config-file", true)
+			options.SetOption("overwrite-config-file", true)
 		}
 	}
 }
@@ -41,13 +41,6 @@ func tryMain() error {
 	modBundle, err := modules.ReadModuleBundle(modFiles)
 	if err != nil {
 		return fmt.Errorf("tryMain: %s", err.Error())
-	}
-
-	fmt.Printf("%#v\n", modBundle)
-
-	for _, m := range modBundle.Modules {
-		fmt.Println(build.GetMakefileName(newConfig, m))
-		fmt.Println(build.GetModuleMakefileContent(newConfig, m))
 	}
 
 	err = build.GenrateModuleMakefileBundle(newConfig, modBundle)

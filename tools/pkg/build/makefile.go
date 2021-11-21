@@ -24,11 +24,15 @@ func GetMakefileName(conf *config.Config, module *modules.Module) string {
 	return path.Join(conf.MakefilesDir, filename)
 }
 
+func getLibName(name string) string {
+	return strings.ReplaceAll(name, "/", "_")
+}
+
 func getTarget(module *modules.Module) string {
 	var target string
 	switch module.Type {
 	case "shared_library":
-		target += fmt.Sprintf("MODULE_TARGET=lib%s\n", module.Name)
+		target += fmt.Sprintf("MODULE_TARGET=lib%s\n", getLibName(module.Name))
 	}
 	target += fmt.Sprintf("MODULE_TARGET_KIND=%s\n", module.Type)
 	return target
@@ -42,7 +46,8 @@ func getHeadersExportDir(module *modules.Module) string {
 	return fmt.Sprintf("MODULE_HEADERS_EXPORT_DIR=%s\n", module.BaseDir)
 }
 
-func GetModuleMakefileContent(conf *config.Config, module *modules.Module) string {
+func GetModuleMakefileContent(conf *config.Config, module *modules.Module,
+	modBundle *modules.ModuleBundle) string {
 	/*
 	  MODULE_TARGET=libhello
 	  MODULE_TARGET_KIND=shared_library
@@ -51,6 +56,11 @@ func GetModuleMakefileContent(conf *config.Config, module *modules.Module) strin
 	  MODULE_HEADERS_EXPORT_DIR=hello
 	*/
 	var content string = makefileHeader
+
+	content += `INCLUDE_DEPENDENCY?=0
+
+ifeq ($(INCLUDE_DEPENDENCY),0)
+`
 
 	// Compute target
 	content += getTarget(module)
@@ -62,11 +72,37 @@ func GetModuleMakefileContent(conf *config.Config, module *modules.Module) strin
 	content += getBaseDir(module)
 	content += getHeadersExportDir(module)
 
+	var modDeps string
+	var modLibDeps string
+	{
+		var modDepsL []string
+		var modLibDepsL []string
+		for _, dep := range module.Dependencies.Dependency {
+			m := modBundle.GetModuleByName(dep)
+			if m != nil {
+				modDepsL = append(modDepsL, m.Name)
+				modLibDepsL = append(modLibDepsL, getLibName(m.Name))
+			}
+		}
+		modDeps = strings.Join(modDepsL, " ")
+		modLibDeps = strings.Join(modLibDepsL, " ")
+	}
+
+	content += fmt.Sprintf("MODULE_DEPENDENCIES=%s\n", modDeps)
+	content += fmt.Sprintf("MODULE_LIB_DEPENDENCIES=%s\n", modLibDeps)
+
+	content += "else\n"
+	content += fmt.Sprintf(".PHONY: %s_upstream\n", module.Name)
+	content += fmt.Sprintf("%s_upstream:\n\t$(MAKE) -C $(SOURCE_DIR)/%s all BUILD_UPSTREAM=1\n",
+		module.Name, module.BaseDir)
+	content += "endif"
+
 	return content
 }
 
-func GenerateModuleMakefile(conf *config.Config, module *modules.Module, filename string) error {
-	content := GetModuleMakefileContent(conf, module)
+func GenerateModuleMakefile(conf *config.Config, module *modules.Module,
+	modBundle *modules.ModuleBundle, filename string) error {
+	content := GetModuleMakefileContent(conf, module, modBundle)
 
 	err := utils.Mkdir(path.Dir(filename))
 	if err != nil {
@@ -84,7 +120,7 @@ func GenerateModuleMakefile(conf *config.Config, module *modules.Module, filenam
 func GenrateModuleMakefileBundle(conf *config.Config, modBundle *modules.ModuleBundle) error {
 	for _, module := range modBundle.Modules {
 		filename := GetMakefileName(conf, module)
-		err := GenerateModuleMakefile(conf, module, filename)
+		err := GenerateModuleMakefile(conf, module, modBundle, filename)
 		if err != nil {
 			return fmt.Errorf("build.GenrateModuleMakefileBundle: %s", err.Error())
 		}
@@ -109,8 +145,8 @@ func GenerateModuleConfigMakefile(conf *config.Config, module *modules.Module) e
 
 	fmt.Printf("configFileName = %s\n", configFileName)
 
-	if utils.FileExists(configFileName) && !options.GetOptionBool("override-config-file") {
-		return fmt.Errorf("file %s already exists, use --allow-override to override", configFileName)
+	if utils.FileExists(configFileName) && !options.GetOptionBool("overwrite-config-file") {
+		return fmt.Errorf("file %s already exists, use --allow-overwrite to overwrite", configFileName)
 	}
 
 	if !utils.DirExists(path.Dir(configFileName)) {
@@ -193,8 +229,8 @@ func GenerateConfigMakefileContent(conf *config.Config) string {
 func GenerateConfigMakefile(conf *config.Config, confToDump *config.Config) error {
 	configFileName := path.Join(conf.SandboxRoot, conf.MakerulesDir, configMakefileName)
 
-	if utils.FileExists(configFileName) && !options.GetOptionBool("override-config-file") {
-		return fmt.Errorf("file %s already exists, use --allow-overwrite to override", configFileName)
+	if utils.FileExists(configFileName) && !options.GetOptionBool("overwrite-config-file") {
+		return fmt.Errorf("file %s already exists, use --allow-overwrite to overwrite", configFileName)
 	}
 
 	if !utils.DirExists(path.Dir(configFileName)) {

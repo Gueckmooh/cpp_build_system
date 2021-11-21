@@ -1,0 +1,8 @@
+<module name="pouet">
+  <type>shared_library</type>
+  <baseDir>pouet</baseDir>
+  <exportDir>pouet</exportDir>
+  <dependencies>
+    <dependency>hello</dependency>
+  </dependencies>
+</module>

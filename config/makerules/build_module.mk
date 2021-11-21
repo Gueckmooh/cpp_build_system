@@ -15,7 +15,17 @@ MODULE_SOURCE_PATH?=$(MODULE_PATH)/src
 MODULE_HEADERS_PATH?=$(MODULE_PATH)/include
 HEADERS_EXPORT_PATH?=$(INCLUDE_DIR)/$(MODULE_HEADERS_EXPORT_DIR)
 
+ifneq ($(MODULE_TARGET_KIND),headers_only)
 .DEFAULT_GOAL := build
+else
+.DEFAULT_GOAL := prebuild
+endif
+
+ifneq ($(MODULE_TARGET_KIND),headers_only)
+all: prebuild build
+else
+all: prebuild
+endif
 
 ifeq ($(OS),windows)
 include $(MAKERULES_DIR)/windows.mk
@@ -27,3 +37,5 @@ endif
 ifeq ($(MODULE_TYPE),headers)
 include $(MAKERULES_DIR)/headers.mk
 endif
+
+include $(MAKERULES_DIR)/build_upstream.mk
