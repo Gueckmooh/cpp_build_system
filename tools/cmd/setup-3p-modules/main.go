@@ -65,7 +65,7 @@ func tryMain() error {
 	}
 
 	for _, m := range modBundle.Modules {
-		if m.ThirdParty {
+		if m.ThirdParty && m.Sources.Git != nil {
 			err = modules.CloneModuleRepository(m)
 			if err != nil {
 				return fmt.Errorf("tryMain: %s", err.Error())
