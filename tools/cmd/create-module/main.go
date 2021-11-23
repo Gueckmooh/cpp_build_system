@@ -89,7 +89,17 @@ func tryMain() error {
 			module.Name, module.File)
 	}
 
-	err = sources.GenLibModuleRepository(newConfig, &module)
+	switch module.Type {
+	case "shared_library":
+		err = sources.GenLibModuleRepository(newConfig, &module)
+	case "executable":
+		err = sources.GenExeModuleRepository(newConfig, &module)
+	case "headers_only":
+		err = sources.GenHeaderModuleRepository(newConfig, &module)
+	default:
+		err = fmt.Errorf("unknown module type")
+	}
+
 	if err != nil {
 		return err
 	}
