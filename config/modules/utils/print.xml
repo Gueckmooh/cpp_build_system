@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <module name="utils/print">
   <type>shared_library</type>
   <baseDir>utils/print</baseDir>

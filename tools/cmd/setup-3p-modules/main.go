@@ -46,7 +46,7 @@ func tryMain() error {
 		return fmt.Errorf("tryMain: %s", err.Error())
 	}
 	for _, m := range modBundle.Modules {
-		if m.Sources.Git != nil {
+		if m.Sources != nil && m.Sources.Git != nil {
 			m.Sources.Git.Target = path.Join(conf.SrcDir, m.BaseDir, m.Sources.Git.Target)
 		}
 	}
@@ -71,7 +71,7 @@ func tryMain() error {
 
 	fmt.Println("Cloning 3p modules...")
 	for _, m := range modBundle.Modules {
-		if m.ThirdParty && m.Sources.Git != nil {
+		if m.ThirdParty && m.Sources != nil && m.Sources.Git != nil {
 			err = modules.CloneModuleRepository(m)
 			if err != nil {
 				return fmt.Errorf("tryMain: %s", err.Error())

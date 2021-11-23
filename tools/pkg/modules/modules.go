@@ -1,6 +1,7 @@
 package modules
 
 import (
+	"encoding/xml"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -10,19 +11,17 @@ import (
 )
 
 type Module struct {
-	File         string
-	Name         string `xml:"name,attr"`
-	ThirdParty   bool   `xml:"third_party,attr"`
-	Type         string `xml:"type"`
-	BaseDir      string `xml:"baseDir"`
-	ExportDir    string `xml:"exportDir"`
-	Dependencies struct {
-		Dependency []string `xml:"dependency"`
-	} `xml:"dependencies"`
-	Sources struct {
-		Git    *git.GitRepository `xml:"git"`
-		Commit string             `xml`
-	} `xml:"sources"`
+	XMLName      xml.Name `xml:"module"`
+	File         string   `xml:"-"`
+	Name         string   `xml:"name,attr"`
+	ThirdParty   bool     `xml:"third_party,attr,omitempty"`
+	Type         string   `xml:"type"`
+	BaseDir      string   `xml:"baseDir"`
+	ExportDir    string   `xml:"exportDir"`
+	Dependencies []string `xml:"dependencies>dependency,omitempty"`
+	Sources      *struct {
+		Git *git.GitRepository `xml:"git"`
+	} `xml:"sources,omitempty"`
 }
 
 type ModuleFileBundle struct {
@@ -77,7 +76,11 @@ func GetModuleFiles(conf *config.Config) (*ModuleFileBundle, error) {
 }
 
 func CloneModuleRepository(m *Module) error {
-	return m.Sources.Git.Clone()
+	if m.Sources != nil {
+		return m.Sources.Git.Clone()
+	} else {
+		return fmt.Errorf("Can't clone due to absence of sources in module")
+	}
 }
 
 func computeDeps(m *Module, mb *ModuleBundle, visited []string, deps map[*Module]bool) error {
@@ -89,7 +92,7 @@ func computeDeps(m *Module, mb *ModuleBundle, visited []string, deps map[*Module
 
 	deps[m] = true
 
-	for _, dn := range m.Dependencies.Dependency {
+	for _, dn := range m.Dependencies {
 		d := mb.GetModuleByName(dn)
 		if d != nil {
 			if err := computeDeps(d, mb, append(visited, m.Name), deps); err != nil {

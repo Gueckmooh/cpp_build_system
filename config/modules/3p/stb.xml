@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <module name="3p/stb" third_party="true">
   <type>headers_only</type>
   <baseDir>3p/stb</baseDir>

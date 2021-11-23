@@ -56,7 +56,7 @@ func getDependencies(module *modules.Module, modBundle *modules.ModuleBundle) (s
 	{
 		var modDepsL []string
 		var modLibDepsL []string
-		for _, dep := range module.Dependencies.Dependency {
+		for _, dep := range module.Dependencies {
 			m := modBundle.GetModuleByName(dep)
 			if m != nil {
 				modDepsL = append(modDepsL, m.Name)
