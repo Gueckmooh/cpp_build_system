@@ -25,6 +25,7 @@ func tryMain() error {
 		return fmt.Errorf("tryMain: %s", err.Error())
 	}
 
+	fmt.Println("Reading config file...")
 	conf, err := config.GetConfig(cwd)
 	if err != nil {
 		return fmt.Errorf("tryMain: %s", err.Error())
@@ -38,21 +39,25 @@ func tryMain() error {
 		return fmt.Errorf("tryMain: %s", err.Error())
 	}
 
+	fmt.Println("Reading module files...")
 	modBundle, err := modules.ReadModuleBundle(modFiles)
 	if err != nil {
 		return fmt.Errorf("tryMain: %s", err.Error())
 	}
 
+	fmt.Println("Generating module makefiles...")
 	err = build.GenrateModuleMakefileBundle(newConfig, modBundle, false)
 	if err != nil {
 		return fmt.Errorf("tryMain: %s", err.Error())
 	}
 
+	fmt.Println("Generating module config makefiles...")
 	err = build.GenerateModuleBundleConfigMakefile(newConfig, modBundle, false)
 	if err != nil {
 		return fmt.Errorf("tryMain: %s", err.Error())
 	}
 
+	fmt.Println("Generating makerule config file...")
 	err = build.GenerateConfigMakefile(newConfig, conf)
 	if err != nil {
 		return fmt.Errorf("tryMain: %s", err.Error())

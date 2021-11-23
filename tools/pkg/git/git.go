@@ -35,6 +35,13 @@ func CloneRepository(url string, target string) error {
 		cmd.Stderr = mw
 	}
 
+	if utils.DirExists(target) {
+		if !options.GetOptionBool("quiet") {
+			fmt.Println("Ignored because dir already exists.")
+		}
+		return nil
+	}
+
 	if err := cmd.Run(); err != nil {
 		return fmt.Errorf("git.CloneRepository: %s", err.Error())
 	}

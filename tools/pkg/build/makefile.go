@@ -124,6 +124,8 @@ ifeq ($(INCLUDE_DEPENDENCY),0)
 
 func GenerateModuleMakefile(conf *config.Config, module *modules.Module,
 	modBundle *modules.ModuleBundle, filename string) error {
+	fmt.Printf("Generating %s...\n", filename)
+
 	content, err := GetModuleMakefileContent(conf, module, modBundle)
 	if err != nil {
 		return fmt.Errorf("build.GenerateModuleMakefile: %s", err.Error())
@@ -171,7 +173,7 @@ func GenerateModuleConfigMakefile(conf *config.Config, module *modules.Module) e
 
 	configFileName := path.Join(conf.SandboxRoot, conf.SrcDir, module.BaseDir, configMakefileName)
 
-	fmt.Printf("configFileName = %s\n", configFileName)
+	fmt.Printf("Generating %s...\n", path.Join(conf.SrcDir, module.BaseDir, configMakefileName))
 
 	if utils.FileExists(configFileName) && !options.GetOptionBool("overwrite-config-file") {
 		return fmt.Errorf("file %s already exists, use --allow-overwrite to overwrite", configFileName)
@@ -253,13 +255,13 @@ func GenerateConfigMakefileContent(conf *config.Config) string {
 	content += fmt.Sprintf("OBJS_DIR:=$(BUILD_DIR)/objs\n")
 	content += fmt.Sprintf("DEPS_DIR:=$(BUILD_DIR)/deps\n")
 
-	fmt.Println(content)
-
 	return content
 }
 
 func GenerateConfigMakefile(conf *config.Config, confToDump *config.Config) error {
 	configFileName := path.Join(conf.SandboxRoot, conf.MakerulesDir, configMakefileName)
+
+	fmt.Printf("Generating %s...\n", path.Join(conf.MakerulesDir, configMakefileName))
 
 	if utils.FileExists(configFileName) && !options.GetOptionBool("overwrite-config-file") {
 		return fmt.Errorf("file %s already exists, use --allow-overwrite to overwrite", configFileName)
