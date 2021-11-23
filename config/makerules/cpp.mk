@@ -91,11 +91,14 @@ $(LIB_DIR)/%.so: $(OBJ_FILES) $$(@D)/.f
 .PHONY: prebuild
 prebuild: dep_files export_headers
 
-.PHONY: build_prehook
-build_prehook:
+.PHONY: build_dependencies
+build_dependencies: ;
 
 .PHONY: build
-build: build_prehook real_build
+build:: build_dependencies
+build:: real_build
+
+# real_build: build_dependencies
 
 .PHONY: real_build
 ifeq ($(MODULE_TARGET_KIND),executable)

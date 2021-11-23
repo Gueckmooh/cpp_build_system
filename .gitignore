@@ -1,0 +1,60 @@
+# Created by https://www.toptal.com/developers/gitignore/api/c++,go
+# Edit at https://www.toptal.com/developers/gitignore?templates=c++,go
+
+### C++ ###
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# Build directory
+build/
+
+### Go ###
+# Binaries for programs and plugins
+*.exe~
+tools/bin
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+
+# Dependency directories (remove the comment below to include it)
+# vendor/
+
+### Go Patch ###
+/vendor/
+/Godeps/
+
+### Build System Generated Files ###
+config/makefiles/
+config.mk
