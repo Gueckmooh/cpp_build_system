@@ -20,7 +20,8 @@ type Module struct {
 		Dependency []string `xml:"dependency"`
 	} `xml:"dependencies"`
 	Sources struct {
-		Git *git.GitRepository `xml:"git"`
+		Git    *git.GitRepository `xml:"git"`
+		Commit string             `xml`
 	} `xml:"sources"`
 }
 

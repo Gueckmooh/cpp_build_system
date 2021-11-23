@@ -3,7 +3,7 @@
   <baseDir>3p/stb</baseDir>
   <exportDir>3p/stb</exportDir>
   <sources>
-    <git target="stb">https://github.com/nothings/stb</git>
+    <git target="stb" commit="af1a5bc">https://github.com/nothings/stb</git>
   </sources>
   <dependencies>
   </dependencies>
