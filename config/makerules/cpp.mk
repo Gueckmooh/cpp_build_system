@@ -6,6 +6,7 @@
 ### COMPUTE OPTIONS
 CC:=$(TARGET_ARCH)gcc
 CXX:=$(TARGET_ARCH)g++
+AR:=ar
 
 CXXSTD=-std=c++20
 
@@ -21,13 +22,16 @@ CXXFLAGS+=-O3
 endif
 
 ifeq ($(MODULE_TARGET_KIND),shared_library)
+ifeq ($(LIBRARY_KIND),shared)
 CXXFLAGS+=-fPIC									#@todo change that
+endif
 endif
 
 LDFLAGS+=$(addprefix -L,$(LIB_DIR)) $(addprefix -l,$(MODULE_LIB_DEPENDENCIES))
 
 CXX_MSG=$(ECHO) "\tCXX\t$(shell realpath --relative-to="$(ROOT)" $@)"
 CXXLD_MSG=$(ECHO) "\tCXXLD\t$(shell realpath --relative-to="$(ROOT)" $@)"
+AR_MSG=$(ECHO) "\tAR\t$(shell realpath --relative-to="$(ROOT)" $@)"
 GEN_MSG=$(ECHO) "\tGEN\t$(shell realpath --relative-to="$(ROOT)" $@)"
 
 ### COMPUTE FILES
@@ -87,6 +91,10 @@ $(LIB_DIR)/%.so: $(OBJ_FILES) $$(@D)/.f
 	$(CXXLD_MSG)
 	$(QAT)$(CXX) -shared -o $@ $(OBJ_FILES) $(LDFLAGS)
 
+$(LIB_DIR)/%.a: $(OBJ_FILES) $$(@D)/.f
+	$(AR_MSG)
+	$(QAT)$(AR) rcs $@ $(OBJ_FILES)
+
 ##### BUILD TARGETS
 .PHONY: prebuild
 prebuild: dep_files export_headers
@@ -105,5 +113,10 @@ ifeq ($(MODULE_TARGET_KIND),executable)
 real_build: $(BIN_DIR)/$(MODULE_TARGET)
 endif
 ifeq ($(MODULE_TARGET_KIND),shared_library)
+ifeq ($(LIBRARY_KIND),shared)
 real_build: $(LIB_DIR)/$(MODULE_TARGET).so
+endif
+ifeq ($(LIBRARY_KIND),static)
+real_build: $(LIB_DIR)/$(MODULE_TARGET).a
+endif
 endif

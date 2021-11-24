@@ -63,12 +63,6 @@ func tryMain() error {
 		return fmt.Errorf("tryMain: %s", err.Error())
 	}
 
-	fmt.Println("Generating makerule config file...")
-	err = build.GenerateConfigMakefile(newConfig, conf)
-	if err != nil {
-		return fmt.Errorf("tryMain: %s", err.Error())
-	}
-
 	fmt.Println("Cloning 3p modules...")
 	for _, m := range modBundle.Modules {
 		if m.ThirdParty && m.Sources != nil && m.Sources.Git != nil {

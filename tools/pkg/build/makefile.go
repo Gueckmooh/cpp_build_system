@@ -255,6 +255,12 @@ func GenerateConfigMakefileContent(conf *config.Config) string {
 	content += fmt.Sprintf("OBJS_DIR:=$(BUILD_DIR)/objs\n")
 	content += fmt.Sprintf("DEPS_DIR:=$(BUILD_DIR)/deps\n")
 
+	libraryKind := options.GetOptionString("library-kind")
+	if libraryKind == "" {
+		libraryKind = "shared"
+	}
+	content += fmt.Sprintf("LIBRARY_KIND:=%s\n", libraryKind)
+
 	return content
 }
 

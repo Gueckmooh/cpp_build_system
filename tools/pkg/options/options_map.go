@@ -2,7 +2,10 @@ package options
 
 import "tools/pkg/utils"
 
-const defaultBool = false
+const (
+	defaultBool   = false
+	defaultString = ""
+)
 
 var optionMap map[string]interface{} = nil
 
@@ -40,4 +43,12 @@ func GetOptionBool(name string) bool {
 		return v.(bool)
 	}
 	return defaultBool
+}
+
+func GetOptionString(name string) string {
+	v := GetOption(name)
+	if v != nil && utils.IsString(v) {
+		return v.(string)
+	}
+	return defaultString
 }
