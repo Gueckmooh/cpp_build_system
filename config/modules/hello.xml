@@ -5,6 +5,5 @@
   <exportDir>hello</exportDir>
   <dependencies>
     <dependency>utils/print</dependency>
-    <dependency>3p/stb</dependency>
   </dependencies>
 </module>

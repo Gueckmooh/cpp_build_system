@@ -1,10 +1,16 @@
 #include <hello/hello.hpp>
 #include <print/print.hpp>
 
-#include <3p/stb/stb_image.h>
+#include <string>
 
-#include <iostream>
+namespace hello {
 
 void hello() {
-    print("Hello");
+    print::print("Hello");
+}
+
+std::string getHello() {
+    return "Hello";
+}
+
 }

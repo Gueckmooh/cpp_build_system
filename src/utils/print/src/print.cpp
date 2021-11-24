@@ -1,8 +1,10 @@
 #include <print/print.hpp>
 
-#include <string>
+#include <string_view>
 #include <iostream>
 
-void print(std::string v) {
-    std::cout << v << std::endl;
+namespace print {
+void print(const std::string_view& s) {
+    std::cout << s << std::endl;
+}
 }

@@ -1,5 +1,7 @@
 #pragma once
 
-#include <string>
+#include <string_view>
 
-void print(std::string);
+namespace print {
+void print(const std::string_view&);
+}

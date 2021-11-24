@@ -2,7 +2,9 @@
 <module name="main">
   <type>executable</type>
   <baseDir>main</baseDir>
+  <exportDir>main</exportDir>
   <dependencies>
-    <dependency>pouet</dependency>
+    <dependency>utils/print</dependency>
+    <dependency>hello</dependency>
   </dependencies>
 </module>

@@ -2,7 +2,6 @@
 <module name="utils/print">
   <type>shared_library</type>
   <baseDir>utils/print</baseDir>
-  <exportDir>print</exportDir>
-  <dependencies>
-  </dependencies>
+  <exportDir>utils/print</exportDir>
+  <dependencies></dependencies>
 </module>
