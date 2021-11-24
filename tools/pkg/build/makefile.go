@@ -33,6 +33,7 @@ func getTarget(module *modules.Module) string {
 	switch module.Type {
 	case "shared_library":
 		target += fmt.Sprintf("MODULE_TARGET=lib%s\n", getLibName(module.Name))
+		target += fmt.Sprintf("MODULE_LIB_NAME=%s\n", getLibName(module.Name))
 	case "executable":
 		target += fmt.Sprintf("MODULE_TARGET=%s\n", getLibName(module.Name))
 	}
@@ -115,7 +116,7 @@ ifeq ($(INCLUDE_DEPENDENCY),0)
 
 	content += "else\n"
 	content += fmt.Sprintf(".PHONY: %s_upstream\n", module.Name)
-	content += fmt.Sprintf("%s_upstream:\n\t$(QAT)$(MAKE) -C $(SOURCE_DIR)/%s --no-print-directory all BUILD_UPSTREAM=1\n",
+	content += fmt.Sprintf("%s_upstream:\n\t$(QAT)$(MAKE) -C $(SOURCE_DIR)/%s --no-print-directory all BUILD_UPSTREAM=1 NOBUILDTESTS=1\n",
 		module.Name, module.BaseDir)
 	content += "endif"
 

@@ -6,5 +6,6 @@
   <dependencies>
     <dependency>utils/print</dependency>
     <dependency>hello</dependency>
+    <dependency>testable</dependency>
   </dependencies>
 </module>

@@ -22,9 +22,9 @@ else
 endif
 
 ifneq ($(MODULE_TARGET_KIND),headers_only)
-all: prebuild build
+all: prebuild build check
 else
-all: prebuild
+all: prebuild check
 endif
 
 ifeq ($(OS),windows)
@@ -39,3 +39,5 @@ include $(MAKERULES_DIR)/headers.mk
 endif
 
 include $(MAKERULES_DIR)/build_upstream.mk
+
+include $(MAKERULES_DIR)/unittest.mk
