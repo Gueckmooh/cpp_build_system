@@ -1,19 +1,6 @@
 .SECONDEXPANSION:
 
-include $(MAKERULES_DIR)/common.mk
-
-SCRIPTS_DIR:=$(ROOT)/scripts
-
-include $(MAKE_INCLUDE_DIR)/config.mk
-include $(MAKEFILES_DIR)/$(MODULE_NAME).mk
-
-.PHONY: dependencies
-dependencies: $(MODULE_DEPENDENCIES)
-
-MODULE_PATH?=$(SOURCE_DIR)/$(MODULE_BASE_DIR)
-MODULE_SOURCE_PATH?=$(MODULE_PATH)/src
-MODULE_HEADERS_PATH?=$(MODULE_PATH)/include
-HEADERS_EXPORT_PATH?=$(INCLUDE_DIR)/$(MODULE_HEADERS_EXPORT_DIR)
+include $(MAKE_INCLUDE_DIR)/base.mk
 
 ifneq ($(MODULE_TARGET_KIND),headers_only)
 .DEFAULT_GOAL := build

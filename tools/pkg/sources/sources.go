@@ -53,7 +53,7 @@ const dummyMakefileContent = `MODULE_NAME=%s
 
 include config.mk
 
-include $(MAKE_INCLUDE_DIR)/config.mk
+include $(MAKE_INCLUDE_DIR)/base.mk
 include $(MAKE_INCLUDE_DIR)/build_module.mk
 `
 
