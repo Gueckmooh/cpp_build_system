@@ -106,8 +106,8 @@ build_dependencies: ;
 build:: build_dependencies
 build:: real_build
 
-ifneq ($(POST_BUILD_TARGETS),)
-build:: $(POST_BUILD_TARGETS)
+ifneq ($(POST_BUILD_HOOKS),)
+build:: $(POST_BUILD_HOOKS)
 endif
 
 # real_build: build_dependencies

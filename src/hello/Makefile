@@ -8,7 +8,7 @@ ifeq ($(TOTO),1)
 SOURCE_FILES=$(MODULE_SOURCE_DIR)/hello.cpp
 endif
 
-POST_BUILD_TARGETS:=toto
+POST_BUILD_HOOKS:=toto
 .PHONY: toto
 toto:
 	echo toto
