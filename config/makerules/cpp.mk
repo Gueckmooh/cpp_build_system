@@ -106,6 +106,10 @@ build_dependencies: ;
 build:: build_dependencies
 build:: real_build
 
+ifneq ($(POST_BUILD_TARGETS),)
+build:: $(POST_BUILD_TARGETS)
+endif
+
 # real_build: build_dependencies
 
 .PHONY: real_build
