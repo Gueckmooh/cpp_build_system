@@ -8,6 +8,7 @@ import (
 	"strings"
 	"tools/pkg/config"
 	"tools/pkg/git"
+	"tools/pkg/options"
 )
 
 type Module struct {
@@ -19,8 +20,11 @@ type Module struct {
 	BaseDir           string   `xml:"baseDir"`
 	ExportDir         string   `xml:"exportDir"`
 	Dependencies      []string `xml:"dependencies>dependency,omitempty"`
-	ExtraDependencies []string `xml:"extraDependencies>dependency,omitempty"`
-	Sources           *struct {
+	ExtraDependencies []struct {
+		Dependency string `xml:",chardata"`
+		TargetOS   string `xml:"target_os,attr"`
+	} `xml:"extraDependencies>dependency,omitempty"`
+	Sources *struct {
 		Git *git.GitRepository `xml:"git"`
 	} `xml:"sources,omitempty"`
 }
@@ -95,7 +99,11 @@ func computeDeps(m *Module, mb *ModuleBundle, visited []string, deps map[*Module
 	deps[m] = true
 
 	for _, edn := range m.ExtraDependencies {
-		extraDeps[edn] = true
+		if edn.TargetOS == "" {
+			extraDeps[edn.Dependency] = true
+		} else if options.GetOptionString("target_os") == edn.TargetOS {
+			extraDeps[edn.Dependency] = true
+		}
 	}
 	for _, dn := range m.Dependencies {
 		d := mb.GetModuleByName(dn)
