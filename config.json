@@ -9,5 +9,6 @@
     "makefiles_dir":"$(config_dir)/makefiles",
     "makerules_dir":"$(config_dir)/makerules",
     "scripts_dir":"scripts",
-    "include_dir":"$(build_dir)/include"
+    "include_dir":"$(build_dir)/include",
+    "target_os":"linux"
 }

@@ -14,7 +14,7 @@ else
 all: prebuild check
 endif
 
-ifeq ($(OS),windows)
+ifeq ($(TARGET_OS),windows)
 include $(MAKERULES_DIR)/windows.mk
 endif
 

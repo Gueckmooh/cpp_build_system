@@ -10,19 +10,9 @@ import (
 	"strings"
 	"tools/pkg/config"
 	"tools/pkg/modules"
-	"tools/pkg/options"
 	"tools/pkg/sources"
 	"tools/pkg/utils"
 )
-
-func processOptions() {
-	for _, option := range os.Args {
-		switch option {
-		case "--allow-overwrite":
-			options.SetOption("overwrite-config-file", true)
-		}
-	}
-}
 
 func tryMain() error {
 	cwd, err := os.Getwd()
@@ -128,7 +118,6 @@ func tryMain() error {
 }
 
 func main() {
-	processOptions()
 	err := tryMain()
 	if err != nil {
 		fmt.Printf("main: %s\n", err.Error())

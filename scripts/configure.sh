@@ -2,12 +2,14 @@
 
 usage() {
     echo "usage: $0 [-h -s]"
-    echo "  use -s to use build static libraries instead of dynamic one"
+    echo "  use -s to use build static libraries"
+    echo "  use -d to use build dynamic libraries"
+    echo "  default is dynamic"
 }
 
 SETUP_MODS_OPTS=()
 
-while getopts "hs" arg
+while getopts "hsd" arg
 do
     case "${arg}" in
         h)
@@ -16,6 +18,9 @@ do
             ;;
         s)
             SETUP_MODS_OPTS+=(--static-libraries)
+            ;;
+        d)
+            SETUP_MODS_OPTS+=(--dynamic-libraries)
             ;;
         *)
             usage

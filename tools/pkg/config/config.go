@@ -30,6 +30,8 @@ type Config struct {
 	MakerulesDir   string `json:"makerules_dir" type:"path" dump_to_mk:"true"`
 	ScriptsDir     string `json:"scripts_dir" type:"path" dump_to_mk:"true"`
 	IncludeDir     string `json:"include_dir" type:"path" dump_to_mk:"true"`
+	TargetOS       string `json:"target_os" type:"flag" dump_to_mk:"ifnotempty"`
+	LibraryKind    string `json:"library_kind" type:"flag" dump_to_mk:"false"`
 }
 
 func (c *Config) Expand(context *utils.Context) *Config {

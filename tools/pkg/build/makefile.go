@@ -208,7 +208,7 @@ func GenerateModuleBundleConfigMakefile(conf *config.Config, modBundle *modules.
 
 var pouetRe = regexp.MustCompile(`\$\(([^)]*)\)`)
 
-func createMakefileValue(value string) string {
+func createMakefilePathValue(value string) string {
 	if pouetRe.MatchString(value) {
 		for _, m := range pouetRe.FindAllStringSubmatch(value, -1) {
 			value = strings.ReplaceAll(value, m[1], strings.ToUpper(m[1]))
@@ -224,16 +224,32 @@ func genConfigMakefileAttributes(conf *config.Config) string {
 	vConf := reflect.ValueOf(conf)
 
 	for i := 0; i < vConf.Elem().NumField(); i++ {
-		if vConf.Elem().Type().Field(i).Tag.Get("type") != "path" ||
-			vConf.Elem().Type().Field(i).Tag.Get("dump_to_mk") != "true" {
+		key := vConf.Elem().Type().Field(i).Tag.Get("json")
+		fmt.Println(key)
+		if !(vConf.Elem().Type().Field(i).Tag.Get("dump_to_mk") == "true" ||
+			vConf.Elem().Type().Field(i).Tag.Get("dump_to_mk") == "ifnotempty") {
+			fmt.Println("dumped1")
 			continue
 		}
-		key := vConf.Elem().Type().Field(i).Tag.Get("json")
-		value := vConf.Elem().Field(i).String()
-		key = strings.ToUpper(key)
-		value = createMakefileValue(value)
-		if key != "" {
-			content += fmt.Sprintf("%s=%s\n", key, value)
+		if vConf.Elem().Type().Field(i).Tag.Get("dump_to_mk") == "ifnotempty" &&
+			vConf.Elem().Field(i).String() == "" {
+			fmt.Println("dumped2")
+			continue
+		}
+		if vConf.Elem().Type().Field(i).Tag.Get("type") == "path" {
+			value := vConf.Elem().Field(i).String()
+			key = strings.ToUpper(key)
+			value = createMakefilePathValue(value)
+			if key != "" {
+				content += fmt.Sprintf("%s=%s\n", key, value)
+			}
+		} else if vConf.Elem().Type().Field(i).Tag.Get("type") == "flag" {
+			// key := vConf.Elem().Type().Field(i).Tag.Get("json")
+			value := vConf.Elem().Field(i).String()
+			key = strings.ToUpper(key)
+			if key != "" {
+				content += fmt.Sprintf("%s=%s\n", key, value)
+			}
 		}
 	}
 
@@ -258,7 +274,11 @@ func GenerateConfigMakefileContent(conf *config.Config) string {
 
 	libraryKind := options.GetOptionString("library-kind")
 	if libraryKind == "" {
-		libraryKind = "shared"
+		if conf.LibraryKind == "" {
+			libraryKind = "shared"
+		} else {
+			libraryKind = conf.LibraryKind
+		}
 	}
 	content += fmt.Sprintf("LIBRARY_KIND:=%s\n", libraryKind)
 

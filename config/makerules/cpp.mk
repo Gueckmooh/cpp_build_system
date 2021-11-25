@@ -15,6 +15,22 @@ WARNING_FLAGS?=-Wall -Wextra
 CXXFLAGS+=$(INCLUDE_FLAGS) $(WARNING_FLAGS)
 CXXFLAGS+=$(CXXSTD)
 
+ifeq ($(MODULE_TARGET_KIND),shared_library)
+ifeq ($(LIBRARY_KIND),shared)
+CXXFLAGS+=-D__LIBRARY_KIND__=shared
+endif
+ifeq ($(LIBRARY_KIND),static)
+CXXFLAGS+=-D__LIBRARY_KIND__=static
+endif
+endif
+
+ifeq ($(TARGET_OS),linux)
+CXXFLAGS+=-D__TARGET_LINUX__
+else ifeq ($(TARGET_OS),windows)
+CXXFLAGS+=-D__TARGET_WINDOWS__
+endif
+
+
 ifeq ($(DEBUG),1)
 CXXFLAGS+=-g -O0
 else

@@ -17,6 +17,8 @@ func processOptions() {
 			options.SetOption("overwrite-config-file", true)
 		case "--static-libraries":
 			options.SetOption("library-kind", "static")
+		case "--dynamic-libraries":
+			options.SetOption("library-kind", "dynamic")
 		}
 	}
 }
