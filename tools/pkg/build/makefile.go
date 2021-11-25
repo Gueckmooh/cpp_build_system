@@ -225,15 +225,12 @@ func genConfigMakefileAttributes(conf *config.Config) string {
 
 	for i := 0; i < vConf.Elem().NumField(); i++ {
 		key := vConf.Elem().Type().Field(i).Tag.Get("json")
-		fmt.Println(key)
 		if !(vConf.Elem().Type().Field(i).Tag.Get("dump_to_mk") == "true" ||
 			vConf.Elem().Type().Field(i).Tag.Get("dump_to_mk") == "ifnotempty") {
-			fmt.Println("dumped1")
 			continue
 		}
 		if vConf.Elem().Type().Field(i).Tag.Get("dump_to_mk") == "ifnotempty" &&
 			vConf.Elem().Field(i).String() == "" {
-			fmt.Println("dumped2")
 			continue
 		}
 		if vConf.Elem().Type().Field(i).Tag.Get("type") == "path" {
