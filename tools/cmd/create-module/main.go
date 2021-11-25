@@ -46,12 +46,12 @@ func tryMain() error {
 	var exportDir string
 	var dependencies string
 
-	flag.StringVar(&name, "n", "", "Specify the name of the module, mandatory option")
-	flag.BoolVar(&thirdParty, "T", false, "Make the module a third party module")
-	flag.StringVar(&modType, "t", "shared_library", "Specify the type of the module, can be 'executable', 'shared_library' or 'headers_only'")
-	flag.StringVar(&baseDir, "d", "", "Specify the base directory of the module (default: same as module name)")
-	flag.StringVar(&exportDir, "e", "", "Specify the base export directory of the module (default: same as module name)")
-	flag.StringVar(&dependencies, "D", "", "Specify the dependencies of the module, comma separated list")
+	flag.StringVar(&name, "name", "", "Specify the name of the module, mandatory option")
+	flag.BoolVar(&thirdParty, "third-party", false, "Make the module a third party module")
+	flag.StringVar(&modType, "type", "shared_library", "Specify the type of the module, can be 'executable', 'shared_library' or 'headers_only'")
+	flag.StringVar(&baseDir, "module-directory", "", "Specify the base directory of the module (default: same as module name)")
+	flag.StringVar(&exportDir, "module-export-dir", "", "Specify the base export directory of the module (default: same as module name)")
+	flag.StringVar(&dependencies, "dependencies", "", "Specify the dependencies of the module, comma separated list")
 
 	flag.Parse()
 
