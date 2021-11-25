@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<module name="testable">
-  <type>shared_library</type>
-  <baseDir>testable</baseDir>
-  <exportDir>testable</exportDir>
-  <dependencies></dependencies>
-</module>

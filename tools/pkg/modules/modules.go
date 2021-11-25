@@ -11,15 +11,16 @@ import (
 )
 
 type Module struct {
-	XMLName      xml.Name `xml:"module"`
-	File         string   `xml:"-"`
-	Name         string   `xml:"name,attr"`
-	ThirdParty   bool     `xml:"third_party,attr,omitempty"`
-	Type         string   `xml:"type"`
-	BaseDir      string   `xml:"baseDir"`
-	ExportDir    string   `xml:"exportDir"`
-	Dependencies []string `xml:"dependencies>dependency,omitempty"`
-	Sources      *struct {
+	XMLName           xml.Name `xml:"module"`
+	File              string   `xml:"-"`
+	Name              string   `xml:"name,attr"`
+	ThirdParty        bool     `xml:"third_party,attr,omitempty"`
+	Type              string   `xml:"type"`
+	BaseDir           string   `xml:"baseDir"`
+	ExportDir         string   `xml:"exportDir"`
+	Dependencies      []string `xml:"dependencies>dependency,omitempty"`
+	ExtraDependencies []string `xml:"extraDependencies>dependency,omitempty"`
+	Sources           *struct {
 		Git *git.GitRepository `xml:"git"`
 	} `xml:"sources,omitempty"`
 }
@@ -83,7 +84,8 @@ func CloneModuleRepository(m *Module) error {
 	}
 }
 
-func computeDeps(m *Module, mb *ModuleBundle, visited []string, deps map[*Module]bool) error {
+func computeDeps(m *Module, mb *ModuleBundle, visited []string, deps map[*Module]bool,
+	extraDeps map[string]bool) error {
 	for _, v := range visited {
 		if v == m.Name {
 			return fmt.Errorf("%s already visited, circular dependencies detected", v)
@@ -92,10 +94,13 @@ func computeDeps(m *Module, mb *ModuleBundle, visited []string, deps map[*Module
 
 	deps[m] = true
 
+	for _, edn := range m.ExtraDependencies {
+		extraDeps[edn] = true
+	}
 	for _, dn := range m.Dependencies {
 		d := mb.GetModuleByName(dn)
 		if d != nil {
-			if err := computeDeps(d, mb, append(visited, m.Name), deps); err != nil {
+			if err := computeDeps(d, mb, append(visited, m.Name), deps, extraDeps); err != nil {
 				return err
 			}
 		}
@@ -104,16 +109,21 @@ func computeDeps(m *Module, mb *ModuleBundle, visited []string, deps map[*Module
 	return nil
 }
 
-func ComputeDependencies(m *Module, mb *ModuleBundle) ([]*Module, error) {
+func ComputeDependencies(m *Module, mb *ModuleBundle) ([]*Module, []string, error) {
 	deps := make(map[*Module]bool)
-	err := computeDeps(m, mb, []string{}, deps)
+	extraDeps := make(map[string]bool)
+	err := computeDeps(m, mb, []string{}, deps, extraDeps)
 	if err != nil {
-		return nil, fmt.Errorf("compute dependencies: %s", err.Error())
+		return nil, nil, fmt.Errorf("compute dependencies: %s", err.Error())
 	}
 	var depL []*Module
-	for k, _ := range deps {
+	var exDepL []string
+	for k := range deps {
 		depL = append(depL, k)
 	}
+	for k := range extraDeps {
+		exDepL = append(exDepL, k)
+	}
 
-	return depL, nil
+	return depL, exDepL, nil
 }

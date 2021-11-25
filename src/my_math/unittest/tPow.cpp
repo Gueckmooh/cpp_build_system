@@ -1,7 +1,9 @@
 #include <gtest/gtest.h>
+#include <my_math/math.hpp>
 
-TEST(Sub, Sub1) {
-    ASSERT_EQ(46 - 4, 42);
+TEST(tPow, pow1) {
+    int v = my_pow(3, 2);
+    ASSERT_EQ(v, 9);
 }
 
 int main(int argc, char** argv) {

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<module name="hello">
-  <type>shared_library</type>
-  <baseDir>hello</baseDir>
-  <exportDir>hello</exportDir>
-  <dependencies>
-    <dependency>utils/print</dependency>
-  </dependencies>
-</module>

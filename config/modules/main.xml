@@ -4,8 +4,6 @@
   <baseDir>main</baseDir>
   <exportDir>main</exportDir>
   <dependencies>
-    <dependency>utils/print</dependency>
-    <dependency>hello</dependency>
-    <dependency>testable</dependency>
+    <dependency>my_math</dependency>
   </dependencies>
 </module>

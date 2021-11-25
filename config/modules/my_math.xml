@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module name="my_math">
+  <type>shared_library</type>
+  <baseDir>my_math</baseDir>
+  <exportDir>my_math</exportDir>
+  <dependencies></dependencies>
+  <extraDependencies>
+    <dependency>pthread</dependency>
+  </extraDependencies>
+</module>

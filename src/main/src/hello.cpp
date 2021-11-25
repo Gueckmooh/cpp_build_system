@@ -1,8 +1,7 @@
-#include <hello/hello.hpp>
-#include <utils/print/print.hpp>
+#include <iostream>
+#include <my_math/math.hpp>
 
 int main() {
-    hello::hello();
-    print::print(hello::getHello());
+    std::cout << "Hello" << my_pow(3, 2) << std::endl;
     return 0;
 }
