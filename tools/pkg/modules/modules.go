@@ -9,6 +9,7 @@ import (
 	"tools/pkg/config"
 	"tools/pkg/git"
 	"tools/pkg/options"
+	"tools/pkg/utils"
 )
 
 type Module struct {
@@ -89,7 +90,7 @@ func CloneModuleRepository(m *Module) error {
 }
 
 func computeDeps(m *Module, mb *ModuleBundle, visited []string, deps map[*Module]bool,
-	extraDeps map[string]bool) error {
+	extraDeps map[string]bool, modOrder *utils.StringBackList) error {
 	for _, v := range visited {
 		if v == m.Name {
 			return fmt.Errorf("%s already visited, circular dependencies detected", v)
@@ -97,18 +98,21 @@ func computeDeps(m *Module, mb *ModuleBundle, visited []string, deps map[*Module
 	}
 
 	deps[m] = true
+	modOrder.Append(m.Name)
 
 	for _, edn := range m.ExtraDependencies {
 		if edn.TargetOS == "" {
 			extraDeps[edn.Dependency] = true
+			modOrder.Append(edn.Dependency)
 		} else if options.GetOptionString("target_os") == edn.TargetOS {
 			extraDeps[edn.Dependency] = true
+			modOrder.Append(edn.Dependency)
 		}
 	}
 	for _, dn := range m.Dependencies {
 		d := mb.GetModuleByName(dn)
 		if d != nil {
-			if err := computeDeps(d, mb, append(visited, m.Name), deps, extraDeps); err != nil {
+			if err := computeDeps(d, mb, append(visited, m.Name), deps, extraDeps, modOrder); err != nil {
 				return err
 			}
 		}
@@ -117,15 +121,17 @@ func computeDeps(m *Module, mb *ModuleBundle, visited []string, deps map[*Module
 	return nil
 }
 
-func ComputeDependencies(m *Module, mb *ModuleBundle) ([]*Module, []string, error) {
+func ComputeDependencies(m *Module, mb *ModuleBundle) ([]*Module, []string, []string, error) {
 	deps := make(map[*Module]bool)
 	extraDeps := make(map[string]bool)
-	err := computeDeps(m, mb, []string{}, deps, extraDeps)
+	var depsOrder utils.StringBackList
+	err := computeDeps(m, mb, []string{}, deps, extraDeps, &depsOrder)
 	if err != nil {
-		return nil, nil, fmt.Errorf("compute dependencies: %s", err.Error())
+		return nil, nil, nil, fmt.Errorf("compute dependencies: %s", err.Error())
 	}
 	var depL []*Module
-	var exDepL []string
+	var exDepL []string = make([]string, len(extraDeps))
+	fmt.Printf("%#v\n", extraDeps)
 	for k := range deps {
 		depL = append(depL, k)
 	}
@@ -133,5 +139,5 @@ func ComputeDependencies(m *Module, mb *ModuleBundle) ([]*Module, []string, erro
 		exDepL = append(exDepL, k)
 	}
 
-	return depL, exDepL, nil
+	return depL, exDepL, depsOrder.List, nil
 }

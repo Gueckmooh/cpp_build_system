@@ -64,17 +64,25 @@ func getDependencies(module *modules.Module, modBundle *modules.ModuleBundle) (s
 			}
 		}
 
-		allDeps, extraDeps, err := modules.ComputeDependencies(module, modBundle)
+		allDeps, _, depsOrder, err := modules.ComputeDependencies(module, modBundle)
 		if err != nil {
 			return "", fmt.Errorf("getDependencies: %s", err.Error())
 		}
-		for _, dep := range allDeps {
-			if dep.Type != "headers_only" && dep.Name != module.Name {
-				modLibDepsL = append(modLibDepsL, getLibName(dep.Name))
+
+		for _, depName := range depsOrder {
+			found := false
+			for _, dep := range allDeps {
+				if dep.Name == depName {
+					if dep.Type != "headers_only" && dep.Name != module.Name {
+						modLibDepsL = append(modLibDepsL, getLibName(dep.Name))
+					}
+					found = true
+					break
+				}
 			}
-		}
-		for _, dep := range extraDeps {
-			modLibDepsL = append(modLibDepsL, dep)
+			if !found {
+				modLibDepsL = append(modLibDepsL, depName)
+			}
 		}
 		modDeps = strings.Join(modDepsL, " ")
 		modLibDeps = strings.Join(modLibDepsL, " ")
